@@ -1,0 +1,20 @@
+version = 1
+
+exclude_patterns = [
+  "  \"node_modules/**/*\",",
+  "  \"dist/**/*\",",
+  "  \"build/**/*\",",
+  "  \"coverage/**/*\",",
+  "  \"vendor/**/*\""
+]
+
+[[analyzers]]
+name = "javascript"
+
+  [analyzers.meta]
+  plugins = [
+    "angularjs",
+    "react",
+    "vue"
+  ]
+  environment = ["nodejs"]
