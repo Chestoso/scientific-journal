@@ -2,16 +2,6 @@ version = 1
 
 [[analyzers]]
 name = "javascript"
-  [analyzers.meta]
-  plugins = [
-    "angular"   # Cambia por "react" o "vue" si corresponde, puedes incluir varios si tu proyecto lo requiere
-  ]
-  environment = ["nodejs"]
 
-exclude = [
-  "node_modules/**/*",
-  "dist/**/*",
-  "build/**/*",
-  "coverage/**/*",
-  "vendor/**/*"
-]
+  [analyzers.meta]
+  plugins = ["angular"]
