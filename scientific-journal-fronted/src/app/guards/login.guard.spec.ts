@@ -1,0 +1,31 @@
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { LoginGuard } from './login.guard';
+import { AuthService } from '../services/auth.service';
+
+describe('LoginGuard', () => {
+  let guard: LoginGuard;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
+  let routerSpy: jasmine.SpyObj<Router>;
+
+  beforeEach(() => {
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken']);
+    routerSpy = jasmine.createSpyObj('Router', ['createUrlTree']);
+
+    TestBed.configureTestingModule({
+      providers: [
+        LoginGuard,
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: Router, useValue: routerSpy }
+      ]
+    });
+
+    guard = TestBed.inject(LoginGuard);
+  });
+
+  it('should be created', () => {
+    expect(guard).toBeTruthy();
+  });
+
+  // Puedes agregar más tests aquí si deseas
+});

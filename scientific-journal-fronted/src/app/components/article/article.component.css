@@ -1,0 +1,38 @@
+.p-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-error {
+  color: #e53935;
+  font-size: 0.85em;
+  margin-top: 0.25em;
+}
+
+/* Opcional: reduce el espacio vertical entre campos */
+form.p-fluid .p-field {
+  margin-bottom: 1rem;
+}
+
+/* Opcional: estilos para el footer del diálogo */
+.p-dialog-footer {
+  padding-top: 1.5rem !important;
+}
+.form-textarea {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    min-height: 60px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.5rem;
+    background: #fff;
+    outline: none;
+    transition: border-color .2s;
+}
+.form-textarea:focus {
+    border-color: #2196f3 !important;
+}
+.p-dialog-footer {
+    padding-top: 1.5rem !important;
+}

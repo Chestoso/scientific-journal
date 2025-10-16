@@ -1,0 +1,114 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-6">
+  <ng-template pTemplate="start">
+    <p-button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+  </ng-template>
+  <ng-template pTemplate="end">
+    <p-button label="Exportar" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+  </ng-template>
+</p-toolbar>
+
+<p-table
+  #dt
+  [value]="publications()"
+  [rows]="10"
+  [columns]="cols"
+  [paginator]="true"
+  [globalFilterFields]="['isbn']"
+  [tableStyle]="{ 'min-width': '60rem' }"
+  [(selection)]="selectedPublications"
+  [rowHover]="true"
+  dataKey="id"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} publicaciones"
+  [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="[5,10,20]"
+>
+  <!-- Nuevo: Título y buscar arriba de la tabla -->
+  <ng-template pTemplate="caption">
+    <div class="flex items-center justify-between w-full">
+      <h5 class="m-0">Gestión de Publicaciones</h5>
+      <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." />
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of cols" [pSortableColumn]="col.field">
+        {{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+      <th style="min-width: 8rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-publication>
+    <tr>
+      <td>{{ getArticleTitle(publication.articleId) }}</td>
+      <td>{{ publication.publicationDate | date:'yyyy-MM-dd' }}</td>
+      <td>{{ publication.isbn }}</td>
+      <td>
+        <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editPublication(publication)" />
+        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deletePublication(publication)" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="publicationDialog" [style]="{ width: '400px',  height: '600px' ,'border-radius': '12px' }" header="Detalles de la Publicación" [modal]="true">
+  <ng-template pTemplate="content">
+    <form class="p-fluid" autocomplete="off">
+      <div class="p-field mb-4">
+        <label for="articleId" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">Artículo</label>
+        <p-dropdown
+          [options]="articles"
+          optionLabel="title"
+          optionValue="id"
+          [(ngModel)]="publication.articleId"
+          name="articleId"
+          placeholder="Seleccione un artículo"
+          [showClear]="true"
+          required
+          [style]="{ width: '100%' }"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="submitted && !publication.articleId">
+          El artículo es requerido.
+        </small>
+      </div>
+      <div class="p-field mb-4">
+        <label for="publicationDate" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">Fecha de publicación</label>
+        <p-calendar
+          [(ngModel)]="publication.publicationDate"
+          name="publicationDate"
+          dateFormat="yy-mm-dd"
+          showIcon="true"
+          required
+          [style]="{ width: '100%' }"
+        ></p-calendar>
+        <small class="p-error" *ngIf="submitted && !publication.publicationDate">
+          La fecha es requerida.
+        </small>
+      </div>
+      <div class="p-field mb-4">
+        <label for="isbn" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">ISBN</label>
+        <input
+          type="text"
+          pInputText
+          id="isbn"
+          [(ngModel)]="publication.isbn"
+          name="isbn"
+          required
+          [style]="{ width: '100%' }"
+        />
+        <small class="p-error" *ngIf="submitted && (!publication.isbn || publication.isbn.trim().length === 0)">
+          El ISBN es requerido.
+        </small>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-center w-full gap-2">
+      <p-button label="Cancelar" icon="pi pi-times" text (click)="hideDialog()" />
+      <p-button label="Guardar" icon="pi pi-check" (click)="savePublication()" />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '400px' }" />

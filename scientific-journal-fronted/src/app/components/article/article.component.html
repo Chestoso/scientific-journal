@@ -1,0 +1,147 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-6">
+    <ng-template pTemplate="start">
+        <p-button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Eliminar" icon="pi pi-trash" outlined (onClick)="deleteSelectedArticles()" [disabled]="!selectedArticles || !selectedArticles.length" />
+    </ng-template>
+    <ng-template pTemplate="end">
+        <p-button label="Exportar" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="articles()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['title','abstract','keywords']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedArticles"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} artículos"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,20]"
+>
+    <ng-template pTemplate="caption">
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Gestión de Artículos</h5>
+            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." />
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="title">Título<p-sortIcon field="title" /></th>
+            <th pSortableColumn="teacherId">Profesor<p-sortIcon field="teacherId" /></th>
+            <th pSortableColumn="authorType">Tipo de autor<p-sortIcon field="authorType" /></th>
+            <th pSortableColumn="abstract">Resumen<p-sortIcon field="abstract" /></th>
+            <th pSortableColumn="keywords">Palabras clave<p-sortIcon field="keywords" /></th>
+            <th pSortableColumn="receivedDate">Fecha recibido<p-sortIcon field="receivedDate" /></th>
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-article>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="article" />
+            </td>
+            <td>{{ article.title }}</td>
+            <td>{{ getTeacherName(article.teacherId) }}</td>
+            <td>{{ article.authorType }}</td>
+            <td>{{ article.abstract }}</td>
+            <td>{{ article.keywords }}</td>
+            <td>{{ article.receivedDate | date:'yyyy-MM-dd' }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editArticle(article)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteArticle(article)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="articleDialog" [style]="{ width: '460px', 'border-radius': '12px' }" header="Detalles del Artículo" [modal]="true">
+    <ng-template pTemplate="content">
+        <form class="p-fluid" autocomplete="off">
+    <div class="p-field mb-3">
+        <label for="teacherId" class="font-semibold mb-1">Profesor</label>
+        <p-dropdown
+            [options]="teachers"
+            optionLabel="fullName"
+            optionValue="id"
+            [(ngModel)]="article.teacherId"
+            name="teacherId"
+            placeholder="Seleccione un profesor"
+            [showClear]="true"
+            required
+        ></p-dropdown>
+        <small class="p-error" *ngIf="submitted && (article.teacherId === null || article.teacherId === undefined)">
+        El profesor es requerido.
+        </small>
+    </div>
+    <div class="p-field mb-3">
+        <label for="authorType" class="font-semibold mb-1">Tipo de autor</label>
+        <p-dropdown
+            [options]="authorTypes"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="article.authorType"
+            name="authorType"
+            placeholder="Seleccione un tipo"
+            [showClear]="true"
+            required
+        ></p-dropdown>
+        <small class="p-error" *ngIf="submitted && !article.authorType">
+        El tipo de autor es requerido.
+        </small>
+    </div>
+    <div class="p-field mb-3">
+        <label for="title" class="font-semibold mb-1">Título</label>
+        <input type="text" pInputText id="title" [(ngModel)]="article.title" name="title" required autofocus />
+        <small class="p-error" *ngIf="submitted && (!article.title || article.title.trim().length === 0)">
+        El título es requerido.
+        </small>
+    </div>
+    <div class="p-field mb-3">
+        <label for="abstract" class="font-semibold mb-1">Resumen</label>
+        <textarea pInputTextarea id="abstract" [(ngModel)]="article.abstract" name="abstract" required rows="3"
+            class="form-textarea"></textarea>
+        <small class="p-error" *ngIf="submitted && (!article.abstract || article.abstract.trim().length === 0)">
+        El resumen es requerido.
+        </small>
+    </div>
+    <div class="p-field mb-3">
+        <label for="keywords" class="font-semibold mb-1">Palabras clave</label>
+        <input type="text" pInputText id="keywords" [(ngModel)]="article.keywords" name="keywords" required />
+        <small class="p-error" *ngIf="submitted && (!article.keywords || article.keywords.trim().length === 0)">
+        Palabras clave requeridas.
+        </small>
+    </div>
+    <div class="p-field mb-3">
+        <label for="receivedDate" class="font-semibold mb-1">Fecha recibido</label>
+        <p-calendar
+            [(ngModel)]="article.receivedDate"
+            name="receivedDate"
+            dateFormat="yy-mm-dd"
+            showIcon="true"
+            required
+        ></p-calendar>
+        <small class="p-error" *ngIf="submitted && !article.receivedDate">
+        La fecha es requerida.
+        </small>
+    </div>
+</form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-center w-full gap-2">
+            <p-button label="Cancelar" icon="pi pi-times" text (click)="hideDialog()" />
+            <p-button label="Guardar" icon="pi pi-check" (click)="saveArticle()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

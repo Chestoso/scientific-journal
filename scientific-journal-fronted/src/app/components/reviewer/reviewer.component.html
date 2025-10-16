@@ -1,0 +1,128 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-6">
+  <ng-template pTemplate="start">
+    <p-button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+  </ng-template>
+  <ng-template pTemplate="end">
+    <p-button label="Exportar" icon="pi pi-upload" severity="secondary" (click)="exportCSV()" />
+  </ng-template>
+</p-toolbar>
+
+<p-table
+  #dt
+  [value]="reviewers()"
+  [rows]="10"
+  [columns]="cols"
+  [paginator]="true"
+  [globalFilterFields]="['fullName','specialty','email','university']"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [(selection)]="selectedReviewers"
+  [rowHover]="true"
+  dataKey="id"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} revisores"
+  [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="[5,10,20]"
+>
+  <!-- TÍTULO Y BUSCADOR -->
+  <ng-template pTemplate="caption">
+    <div class="flex items-center justify-between w-full">
+      <h5 class="m-0">Gestión de Revisores</h5>
+      <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." />
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of cols" [pSortableColumn]="col.field">
+        {{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+      <th style="min-width: 8rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-reviewer>
+    <tr>
+      <td>{{ reviewer.fullName }}</td>
+      <td>{{ reviewer.specialty }}</td>
+      <td>{{ reviewer.email }}</td>
+      <td>{{ reviewer.university }}</td>
+      <td>
+        <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editReviewer(reviewer)" />
+        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteReviewer(reviewer)" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="reviewerDialog" [style]="{ width: '450px', 'border-radius': '12px' }" header="Detalles del Revisor" [modal]="true">
+  <ng-template pTemplate="content">
+    <form class="p-fluid" autocomplete="off">
+      <div class="p-field mb-4">
+        <label for="fullName" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">Nombre completo</label>
+        <input
+          type="text"
+          pInputText
+          id="fullName"
+          [(ngModel)]="reviewer.fullName"
+          name="fullName"
+          required
+          [style]="{ width: '100%' }"
+        />
+        <small class="p-error" *ngIf="submitted && reviewer.fullName.trim().length === 0">
+          El nombre es requerido.
+        </small>
+      </div>
+      <div class="p-field mb-4">
+        <label for="specialty" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">Especialidad</label>
+        <input
+          type="text"
+          pInputText
+          id="specialty"
+          [(ngModel)]="reviewer.specialty"
+          name="specialty"
+          required
+          [style]="{ width: '100%' }"
+        />
+        <small class="p-error" *ngIf="submitted && reviewer.specialty.trim().length === 0">
+          La especialidad es requerida.
+        </small>
+      </div>
+      <div class="p-field mb-4">
+        <label for="email" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">Email</label>
+        <input
+          type="email"
+          pInputText
+          id="email"
+          [(ngModel)]="reviewer.email"
+          name="email"
+          required
+          [style]="{ width: '100%' }"
+        />
+        <small class="p-error" *ngIf="submitted && reviewer.email.trim().length === 0">
+          El email es requerido.
+        </small>
+      </div>
+      <div class="p-field mb-4">
+        <label for="university" class="font-semibold mb-2" style="display:block; margin-bottom: 8px;">Universidad</label>
+        <input
+          type="text"
+          pInputText
+          id="university"
+          [(ngModel)]="reviewer.university"
+          name="university"
+          required
+          [style]="{ width: '100%' }"
+        />
+        <small class="p-error" *ngIf="submitted && reviewer.university.trim().length === 0">
+          La universidad es requerida.
+        </small>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-center w-full gap-2">
+      <p-button label="Cancelar" icon="pi pi-times" text (click)="hideDialog()" />
+      <p-button label="Guardar" icon="pi pi-check" (click)="saveReviewer()" />
+    </div>
+  </ng-template>
+</p-dialog>
+<p-confirmdialog [style]="{ width: '400px' }" />

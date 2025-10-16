@@ -1,0 +1,18 @@
+textarea.with-border, textarea.p-inputtextarea {
+  border: 2px solid #bdbdbd !important;
+  border-radius: 6px;
+  min-height: 80px;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+textarea.with-border:focus, textarea.p-inputtextarea:focus {
+  border-color: #2196F3 !important;
+  outline: none;
+}
+.description-cell {
+  border: 1.5px solid #bdbdbd;
+  border-radius: 5px;
+  padding: 8px;
+  background: #fafafa;
+  min-width: 100px;
+}

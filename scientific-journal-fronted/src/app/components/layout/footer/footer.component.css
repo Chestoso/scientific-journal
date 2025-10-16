@@ -1,0 +1,50 @@
+.layout-footer {
+  width: 100vw;
+  min-width: 100vw;
+  background: linear-gradient(90deg, #ffecb3 0%, #ffd600 100%);
+  box-shadow: 0 -2px 14px #ffd60015;
+  padding: 0.25rem 0 0.18rem 0;    /* Más pequeño */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;         /* Menos separación */
+  font-size: 0.9rem;   /* Letra más pequeña */
+  font-weight: 500;
+  color: #a67c00;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-app-icon {
+  font-size: 1.2rem;   /* Icono más pequeño */
+  color: #a67c00;
+  vertical-align: middle;
+  margin-right: 0.15rem;
+}
+
+.footer-title {
+  font-weight: 700;
+  font-size: 1rem;     /* Más pequeño */
+  letter-spacing: 0.5px;
+  color: #a67c00;
+}
+
+.footer-sep {
+  font-weight: 700;
+  color: #c3a302;
+  margin: 0 0.2rem;
+}
+
+.footer-copy {
+  font-size: 0.82rem;  /* Más pequeño */
+  color: #bfa13a;
+}

@@ -1,0 +1,120 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Eliminar" icon="pi pi-trash" outlined (onClick)="deleteSelectedTeachers()" [disabled]="!selectedTeachers || !selectedTeachers.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Exportar" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="teachers()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['fullName', 'university', 'email', 'orcid']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedTeachers"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} docentes"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10, 20]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Gestión de Docentes</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="fullName" style="min-width:16rem">
+                Nombre
+                <p-sortIcon field="fullName" />
+            </th>
+            <th pSortableColumn="university" style="min-width:16rem">
+                Universidad
+                <p-sortIcon field="university" />
+            </th>
+            <th pSortableColumn="email" style="min-width:16rem">
+                Email
+                <p-sortIcon field="email" />
+            </th>
+            <th pSortableColumn="orcid" style="min-width:16rem">
+                ORCID
+                <p-sortIcon field="orcid" />
+            </th>
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-teacher>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="teacher" />
+            </td>
+            <td style="min-width: 16rem">{{ teacher.fullName }}</td>
+            <td style="min-width: 16rem">{{ teacher.university }}</td>
+            <td style="min-width: 16rem">{{ teacher.email }}</td>
+            <td style="min-width: 16rem">{{ teacher.orcid }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editTeacher(teacher)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteTeacher(teacher)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="teacherDialog" [style]="{ width: '450px' }" header="Detalles del Docente" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="fullName" class="block font-bold mb-3">Nombre</label>
+                <input type="text" pInputText id="fullName" [(ngModel)]="teacher.fullName" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !teacher.fullName">El nombre es requerido.</small>
+            </div>
+
+            <div>
+                <label for="university" class="block font-bold mb-3">Universidad</label>
+                <input type="text" pInputText id="university" [(ngModel)]="teacher.university" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !teacher.university">La universidad es requerida.</small>
+            </div>
+
+            <div>
+                <label for="email" class="block font-bold mb-3">Email</label>
+                <input type="email" pInputText id="email" [(ngModel)]="teacher.email" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !teacher.email">El email es requerido.</small>
+            </div>
+
+            <div>
+                <label for="orcid" class="block font-bold mb-3">ORCID</label>
+                <input type="text" pInputText id="orcid" [(ngModel)]="teacher.orcid" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !teacher.orcid">El ORCID es requerido.</small>
+            </div>
+
+            <div *ngIf="!teacher.id">
+                <label for="password" class="block font-bold mb-3">Contraseña</label>
+                <input type="password" pPassword id="password" [(ngModel)]="teacher.password" required fluid toggleMask feedback="false" />
+                <small class="text-red-500" *ngIf="submitted && !teacher.password">La contraseña es requerida.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancelar" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Guardar" icon="pi pi-check" (click)="saveTeacher()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
