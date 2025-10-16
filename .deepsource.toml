@@ -1,20 +1,25 @@
 version = 1
 
-exclude_patterns = [
-  "\"node_modules/**/*\",",
-  "\"dist/**/*\",",
-  "\"build/**/*\",",
-  "\"coverage/**/*\",",
-  "\"vendor/**/*\""
-]
-
 [[analyzers]]
 name = "javascript"
-
   [analyzers.meta]
   plugins = [
-    "angularjs",
-    "react",
-    "vue"
+    "angular"  # Cambia por "react" o "vue" si corresponde, o agrega más de uno si usas varios frameworks
   ]
   environment = ["nodejs"]
+
+[[analyzers]]
+name = "test-coverage"
+enabled = true
+  [analyzers.meta]
+  reports = [
+    "coverage/lcov.info"
+  ]
+
+exclude = [
+  "node_modules/**/*",
+  "dist/**/*",
+  "build/**/*",
+  "coverage/**/*",
+  "vendor/**/*"
+]
