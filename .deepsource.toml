@@ -1,0 +1,36 @@
+version = 1
+
+# ===========================
+# DeepSource Configuration
+# Analiza frontend (TypeScript) y backend (Node + TS)
+# ===========================
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  # Analizar tanto backend como frontend
+  project_roots = [
+    "scientific-journal-backend",
+    "scientific-journal-frontend",
+    "scientific-journal-fronted" # por si el nombre tiene esta variante
+  ]
+
+  # Incluir TS y JS
+  file_extensions = ["js", "ts", "jsx", "tsx"]
+
+[[transformers]]
+name = "prettier"
+enabled = true
+
+# ===========================
+# Exclusiones
+# ===========================
+exclude_patterns = [
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/coverage/**",
+  "**/*.spec.ts"
+]
